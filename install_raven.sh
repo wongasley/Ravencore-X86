@@ -1,18 +1,18 @@
 #!/bin/bash
 
-#############################
-######Created by Mynima######
-#############################
+##############################################
+######Created by Mynima, Edited by JWong######
+##############################################
 
-#This code is an attempt to create and install a necessary items for a Ravencoin Node on Raspberry Pi
+#This code is an attempt to create and install a necessary items for a Ravencoin Node on x86_64
 #Although every attempt has been made to keep this code error free and robust please use at own risk.
 #I will accept no responsibility for any issues resulting either directly, or indirectly from this.
-#The code is provided for educational purposes only.     Happy Node Running Y'all
+#The code is provided for educational purposes only.
 #####################################################################################################
 
 #Setup items
 
-#Make sure Pi is up-to-date
+#Make sure your Linux OS is up-to-date
 read -p "First thing we will do is update/upgrade your Server, do you wish to continue? (y/n) " update_yn
 
 if [ $update_yn == "y" ]; then
@@ -42,11 +42,11 @@ if [ $new_install -eq 0 ] && [ "$upgrade_node" != "y" ]; then
     if [[ $(ps -ef | grep -c ravend)  -ne 1 ]]; then
         echo "The Ravencoin Daemon is already running. No additional setup is required."
         sleep 3
-        if [ -a /02_Check_Status.sh ]; then
+        if [ -a /check_status.sh ]; then
             echo "Here is the current status of your node:"
             sleep 1
             echo " "
-            ~/02_Check_Status.sh
+            ~/check_status.sh
             echo " "
             sleep 5
         else
@@ -79,7 +79,7 @@ else
     ver_check=404
     while (($ver_check == 404)); do
         read -p "Which version do you want to download? (example 4.6.1) " version_num
-        ver_check=$(curl -s --head -w %{http_code} https://github.com/RavenProject/Ravencoin/releases/download/v$version_num/raven-$version_num-7864c39c2-x86-linux-gnu.tar.gz -o /dev/null)
+        ver_check=$(curl -s --head -w %{http_code} https://github.com/RavenProject/Ravencoin/releases/download/v$version_num/raven-$version_num-7864c39c2-x86_64-linux-gnu.tar.gz -o /dev/null)
         if (($ver_check == 404)); then 
             echo "Version $version_num does not exist, please try again."
         fi
@@ -90,14 +90,14 @@ else
         echo "Downloading files and extracting version $version_num."
         sleep 2
         cd ~/ 
-        wget https://github.com/RavenProject/Ravencoin/releases/download/v$version_num/raven-$version_num-7864c39c2-x86-linux-gnu.tar.gz 
-        tar -xvzf raven-$version_num-7864c39c2-x86-linux-gnu.tar.gz
+        wget https://github.com/RavenProject/Ravencoin/releases/download/v$version_num/raven-$version_num-7864c39c2-x86_64-linux-gnu.tar.gz 
+        tar -xvzf raven-$version_num-7864c39c2-x86_64-linux-gnu.tar.gz
 
         echo "Assigning to local binary for access across users and removing zip file"
         sleep 2
         sudo cp ./raven-$version_num-7864c39c2/bin/* /usr/local/bin
         cd ~/
-        sudo rm raven-$version_num-7864c39c2-x86-linux-gnu.tar.gz 
+        sudo rm raven-$version_num-7864c39c2-x86_64-linux-gnu.tar.gz 
     fi
 
     if [ "$upgrade_node" != "y" ]; then 
@@ -218,9 +218,6 @@ rpcuser=$rpc_user
 rpcpassword=$rpc_pass
 rpcallowip=$rpc_ip #IP_ADDRESS_OF_HOST_YOU_ACCESS_RAVEN-CLI_FROM 
 server=1 
-assetindex=1
-rpcport=8332
-txindex=1
 EOM
         else
             #Creating Config File
@@ -253,9 +250,6 @@ EOM
             touch ~/.raven/raven.conf
             /bin/cat <<EOM >~/raven.conf
 server=1 
-assetindex=1
-rpcport=8332
-txindex=1
 EOM
         fi
 
@@ -309,7 +303,7 @@ EOM
         echo "  "
         echo "  "
         echo "  "
-        echo "If you installed the 02_Check_Status.sh file as well then you can now use this (by typing '~/02_Check_Status.sh') to check on the status of your blockchain."
+        echo "If you installed the check_status.sh file as well then you can now use this (by typing '~/check_status.sh') to check on the status of your blockchain."
         sleep 5
     else
         #Congratulations
@@ -326,10 +320,9 @@ EOM
         echo "  "
         echo "  "
         echo "  "
-        echo "If you installed the 02_Check_Status.sh file as well then you can now use this (by typing '~/02_Check_Status.sh') to check on the status of your blockchain."
+        echo "If you installed the check_status.sh file as well then you can now use this (by typing '~/check_status.sh') to check on the status of your blockchain."
         sleep 5
     fi
     
 fi
-
 
